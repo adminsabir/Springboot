@@ -1,0 +1,29 @@
+version: "3.8"
+services:
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    container_name: rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabitspring
+      - RABBITMQ_DEFAULT_PASS=rabitspring
+      - RABBITMQ_DEFAULT_VHOST=rabbit
+    networks:
+      - internal
+  springmq:
+    build: .
+    container_name: srpingmq
+    ports:
+      - 8484:8484
+    volumes:
+      - ./springmqvol:/springmqvol
+    depends_on:
+     - rabbitmq
+    networks:
+      - internal
+networks:
+  internal:
+    driver: bridge
+
