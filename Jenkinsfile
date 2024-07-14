@@ -25,10 +25,10 @@ pipeline {
         stage ("Upload docker in ECR") {
             steps {
                 script {
-                docker.withRegistry ( profileRegistry, registryCredential ) {
-                docker.Image.push("$BUILD_NUMBER")
-                docker.Image.push("latest")
-                }
+                    docker.withRegistry ( profileRegistry, registryCredential ) {
+                    dockerImage.push("$BUILD_NUMBER")
+                    dockerImage.push("latest")
+                    }
                 }
             }
 
