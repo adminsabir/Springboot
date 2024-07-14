@@ -5,7 +5,9 @@ pipeline {
         maven 'Maven3'
     }
     environment {
-        registryCredential = 'ecr:us-east-1:awscreds'
+        registryCredential = 'ecr:us-east-1:aws-creds'
+        AWS_REGION = 'us-east-1'
+        AWS_ACCOUNT_ID = '210003706436'
         appRegistry = "210003706436.dkr.ecr.us-east-1.amazonaws.com/ribasdevops"
         profileRegistry = "https://210003706436.dkr.ecr.us-east-1.amazonaws.com"
     }
@@ -33,14 +35,21 @@ pipeline {
                 }
             }
         }
+        stage('Login to ECR') {
+            steps {
+                script {
+                    withAWS(credentials: 'aws-creds', region: "${AWS_REGION}") {
+                        sh 'aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
+                    }
+                }
+            }
+        }
 
         stage ('Upload docker in ECR') {
             steps {
                 script {
-                    docker.withRegistry ( profileRegistry, registryCredential ) {
                     dockerImage.push("$BUILD_NUMBER")
                     dockerImage.push('latest')
-                    }
                 }
             }
 
