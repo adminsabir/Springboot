@@ -29,6 +29,7 @@ pipeline {
         stage ('Build docker image') {
             steps {
                 script {
+                    //sh 'docker-compose up --build -d'
                     dockerImage = docker.build ( appRegistry + ":$BUILD_NUMBER", ".")
                 }
             }
